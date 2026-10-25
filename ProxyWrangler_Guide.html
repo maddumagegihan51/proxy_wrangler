@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="The artist’s guide to ProxyWrangler: lighter Blender layouts, adjustable silhouette proxies, and automatic production visibility for rendering.">
+  <title>ProxyWrangler · Artist’s Guide</title>
+  <style>
+    :root { color-scheme: dark; --bg:#101619; --panel:#192226; --line:#314047; --text:#edf3f2; --muted:#adbfbe; --accent:#8ee4c5; --warn:#f5cc8d; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; scroll-padding-top:24px; }
+    body { margin:0; background:var(--bg); color:var(--text); font:16px/1.7 system-ui,-apple-system,"Segoe UI",sans-serif; }
+    a { color:var(--accent); text-underline-offset:4px; }
+    a:focus-visible, summary:focus-visible { outline:3px solid var(--accent); outline-offset:5px; }
+    .skip { position:absolute; top:-70px; left:20px; padding:10px; background:var(--panel); z-index:5; }
+    .skip:focus { top:12px; }
+    .shell { max-width:1180px; margin:auto; display:grid; grid-template-columns:235px minmax(0,1fr); gap:64px; padding:48px 36px 72px; }
+    aside { align-self:start; position:sticky; top:32px; }
+    .brand { font-weight:800; font-size:22px; letter-spacing:-.8px; }
+    .brand span { color:var(--accent); }
+    .edition { color:var(--muted); font-size:12px; letter-spacing:1.5px; text-transform:uppercase; margin:5px 0 32px; }
+    nav { display:grid; gap:3px; border-left:1px solid var(--line); }
+    nav a { text-decoration:none; color:var(--muted); padding:7px 16px; font-size:14px; }
+    nav a:hover { color:var(--accent); background:var(--panel); }
+    .eyebrow { font-size:12px; text-transform:uppercase; letter-spacing:2px; color:var(--accent); font-weight:700; }
+    h1 { font-size:clamp(38px,5.5vw,64px); line-height:1.06; letter-spacing:-2.5px; margin:18px 0 22px; max-width:700px; }
+    h2 { font-size:27px; line-height:1.25; letter-spacing:-.7px; margin:0 0 18px; }
+    h3 { font-size:17px; margin:0 0 8px; }
+    p { margin:0 0 16px; }
+    .lead { color:var(--muted); font-size:19px; max-width:650px; }
+    .pills { display:flex; flex-wrap:wrap; gap:8px; margin:26px 0 34px; }
+    .pill { border:1px solid var(--line); border-radius:30px; padding:4px 12px; color:var(--muted); font-size:12px; }
+    .flow { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:26px 0 0; }
+    .card { padding:20px; border:1px solid var(--line); border-radius:12px; background:var(--panel); }
+    .card p { color:var(--muted); font-size:14px; margin:0; }
+    .number { color:var(--accent); display:block; font-size:12px; letter-spacing:1px; margin-bottom:14px; }
+    section { margin-top:50px; padding-top:34px; border-top:1px solid var(--line); }
+    ol, ul { margin:12px 0 22px; padding-left:24px; }
+    li { padding-left:5px; margin:9px 0; }
+    strong { color:var(--text); }
+    code, kbd { font-family:ui-monospace,Consolas,monospace; font-size:.88em; background:#26343a; padding:3px 7px; border-radius:5px; overflow-wrap:anywhere; }
+    kbd { border:1px solid #53636b; box-shadow:0 2px 0 #080d10; white-space:nowrap; }
+    .note { border-left:3px solid var(--accent); padding:16px 20px; background:#172923; border-radius:0 8px 8px 0; margin:22px 0; }
+    .note p:last-child { margin:0; }
+    .warning { border-color:var(--warn); background:#29251c; }
+    .warning strong { color:var(--warn); }
+    .table-wrap { overflow-x:auto; border:1px solid var(--line); border-radius:10px; margin:20px 0; }
+    table { border-collapse:collapse; width:100%; min-width:440px; text-align:left; font-size:14px; }
+    th { background:var(--panel); color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:.7px; }
+    th,td { padding:14px 17px; border-bottom:1px solid var(--line); vertical-align:top; }
+    tr:last-child td { border-bottom:0; }
+    .stat { color:var(--accent); font-weight:750; white-space:nowrap; }
+    .steps { counter-reset:step; list-style:none; padding:0; }
+    .steps li { position:relative; padding-left:45px; margin:20px 0; }
+    .steps li::before { counter-increment:step; content:counter(step); position:absolute; left:0; top:0; width:28px; height:28px; text-align:center; line-height:28px; color:var(--accent); border:1px solid var(--line); border-radius:50%; font-size:13px; }
+    .muted { color:var(--muted); }
+    details { border:1px solid var(--line); border-radius:9px; padding:15px 18px; margin:10px 0; }
+    summary { cursor:pointer; font-weight:650; }
+    details p { color:var(--muted); margin:12px 0 0; }
+    footer { margin-top:45px; color:var(--muted); font-size:12px; }
+    @media(max-width:850px) { .shell { grid-template-columns:1fr; gap:34px; padding:28px 22px 48px; } aside { position:static; } .edition { margin-bottom:16px; } nav { display:flex; flex-wrap:wrap; gap:4px; border:0; } nav a { padding:5px 10px; background:var(--panel); border-radius:5px; } }
+    @media(max-width:540px) { .flow { grid-template-columns:1fr; } h1 { letter-spacing:-1.5px; } section { margin-top:36px; } }
+    @media(prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } }
+    @media print { :root { color-scheme:light; --bg:white; --panel:#f3f5f4; --line:#d3dcda; --text:#152322; --muted:#465a56; --accent:#17694e; --warn:#795300; } body { font-size:10.5pt; } .shell { display:block; max-width:none; padding:0; } aside, .skip { display:none; } h1 { font-size:32pt; } section { margin-top:24px; padding-top:18px; } .note,.warning { background:#f4f6f3; } code,kbd { background:#edf1ee; color:#152322; box-shadow:none; } .card,li,tr,.note,details { break-inside:avoid; } a { color:inherit; } }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to guide</a>
+  <div class="shell">
+    <aside aria-label="Guide navigation">
+      <div class="brand">Proxy<span>Wrangler</span></div>
+      <div class="edition">Artist’s guide · v1.1.1</div>
+      <nav aria-label="Contents">
+        <a href="#start">Quick start</a>
+        <a href="#install">Install the extension</a>
+        <a href="#generate">Generate &amp; dress</a>
+        <a href="#ratio">Choose a collapse ratio</a>
+        <a href="#manage">Regenerate &amp; share</a>
+        <a href="#render">Render automatically</a>
+        <a href="#production">Restore production assets</a>
+        <a href="#linked">Linked asset workflow</a>
+        <a href="#troubleshooting">Troubleshooting</a>
+      </nav>
+    </aside>
+    <main id="main">
+      <header>
+        <div class="eyebrow">Lighter layouts. Production geometry.</div>
+        <h1>Dress the scene.<br>Keep the detail.</h1>
+        <p class="lead">Use lightweight silhouette proxies to place dense assets in Blender, then render with the original high-poly geometry at your new placements.</p>
+        <div class="pills"><span class="pill">Blender 4.2+ target</span><span class="pill">Tested in Blender 5.1.2</span><span class="pill">Meshes &amp; collection instances</span></div>
+      </header>
+
+      <section id="start">
+        <h2>Your everyday workflow</h2>
+        <div class="flow">
+          <div class="card"><span class="number">01 / SIMPLIFY</span><h3>Generate proxies</h3><p>Select your assets, choose a collapse ratio, and create lightweight stand-ins.</p></div>
+          <div class="card"><span class="number">02 / COMPOSE</span><h3>Dress the layout</h3><p>Move, rotate, and scale the proxies to arrange your scene.</p></div>
+          <div class="card"><span class="number">03 / RENDER</span><h3>Preflight &amp; render</h3><p>F12 checks the current scene before rendering production assets at their proxy placements.</p></div>
+        </div>
+      </section>
+
+      <section id="install">
+        <h2>Install the extension</h2>
+        <ol class="steps">
+          <li>Keep the extension ZIP intact: <code>proxy_wrangler-1.1.1.zip</code>.</li>
+          <li>In Blender, open <strong>Edit → Preferences</strong>. Open the extensions or add-ons section and choose <strong>Install from Disk</strong> from its menu. The exact menu location can vary by Blender version.</li>
+          <li>Select the ZIP and install it. Enable <strong>ProxyWrangler</strong> if it is not enabled automatically.</li>
+          <li>Return to the <strong>3D Viewport</strong>. Press <kbd>N</kbd> to open the sidebar, then select the <strong>ProxyWrangler</strong> tab.</li>
+        </ol>
+        <p class="muted">The panel is titled <strong>ProxyWrangler Engine</strong>. Proxy generation and manual restoration require Object Mode.</p>
+      </section>
+
+      <section id="generate">
+        <h2>Generate proxies &amp; dress the scene</h2>
+        <ol class="steps">
+          <li>Save your scene, switch to <strong>Object Mode</strong>, and select mesh objects or collection-instance objects.</li>
+          <li>Set <strong>Collapse Ratio</strong> in the ProxyWrangler panel. Start with the default <strong>3%</strong>.</li>
+          <li>Under <strong>Generate</strong>, click <strong>Selected</strong>. The new proxy objects are selected for you. <strong>All</strong> processes eligible visible assets in the active view layer, skipping assets that already have proxies.</li>
+          <li>Arrange the proxies with <kbd>G</kbd> to move, <kbd>R</kbd> to rotate, and <kbd>S</kbd> to scale.</li>
+        </ol>
+        <p>Proxies have names beginning with <code>PRXY_</code>, solid viewport display, and a wire overlay. Their geometry is baked and their materials are removed. The corresponding production assets are hidden from viewport editing.</p>
+        <div class="note"><p><strong>Work on placement.</strong> Object transforms transfer to production assets. Editing proxy vertices or adding new proxy modifiers does not transfer those geometry edits to the high-poly asset.</p></div>
+      </section>
+
+      <section id="ratio">
+        <h2>Choose a collapse ratio</h2>
+        <p><strong>Collapse Ratio</strong> sets the percentage of geometry the decimator aims to retain. Drag the slider or enter a value from <strong>0.1% to 100%</strong>.</p>
+        <div class="table-wrap"><table>
+          <thead><tr><th scope="col">Setting</th><th scope="col">What to expect</th></tr></thead>
+          <tbody>
+            <tr><td class="stat">0.1–3%</td><td>Very light proxies for broad placement. Fine shapes may disappear.</td></tr>
+            <tr><td class="stat">3% default</td><td>The starting point for fast silhouette-based scene dressing.</td></tr>
+            <tr><td class="stat">10–30%</td><td>More recognizable contours, with more geometry to draw.</td></tr>
+            <tr><td class="stat">100%</td><td>No intended decimation reduction; useful when preserving evaluated shape matters more than polygon savings.</td></tr>
+          </tbody>
+        </table></div>
+        <p class="muted">For example, 3% of 100,000 triangles is approximately 3,000 triangles. Actual output depends on topology, and viewport performance depends on more than polygon count.</p>
+        <p><strong>Quality presets:</strong> Custom Ratio uses your slider exactly. Fast Layout targets 1%, Balanced targets 3%, and Detailed Silhouette targets 15%. Adaptive uses your slider and raises the ratio for smaller assets. Every mode except Custom Ratio applies the <strong>Minimum Triangles</strong> floor, which defaults to 64. Assets already below the floor retain their geometry. Final counts are approximate because collapse decimation depends on topology.</p>
+        <div class="note"><p><strong>Change quality without losing placement.</strong> Select a new ratio or preset, select your proxies, then click <strong>Regenerate → Selected</strong>. Settings are saved with the scene. Existing proxies only change when you generate or regenerate.</p></div>
+      </section>
+
+      <section id="manage">
+        <h2>Regenerate, select &amp; share geometry</h2>
+        <p>Each workflow row has <strong>Selected</strong> and <strong>All</strong> controls. Generate All uses visible eligible objects in the active view layer. Regenerate All and Restore Production All process proxies in the active scene; view-layer restrictions still apply. For selected regeneration or restoration, you may select a proxy or its production target.</p>
+        <ul>
+          <li><strong>Regenerate:</strong> rebuilds from the production asset using the current quality settings. The proxy object, name, placement, collection membership, and production relationship stay intact. A failed rebuild keeps the existing proxy geometry.</li>
+          <li><strong>Share Matching Geometry:</strong> enabled by default. Identical evaluated geometry and quality settings can reuse one local proxy mesh while keeping separate objects and production references.</li>
+          <li><strong>Safe matching:</strong> differently deformed assets use different proxy meshes. Edited cache geometry is not reused for new matches. Selected regeneration does not replace unselected proxies’ data.</li>
+          <li><strong>Panel counts:</strong> compare the number of proxies with the number of unique mesh data-blocks to see sharing in action.</li>
+        </ul>
+        <div class="note warning"><p><strong>Shared data behaves like Blender linked duplicates.</strong> Editing vertices in a shared proxy mesh affects every proxy using that mesh. Use object transforms for layout work. Disable sharing before regeneration if you want separate proxy mesh data.</p></div>
+      </section>
+
+      <section id="render">
+        <h2>Render automatically</h2>
+        <p>Click <strong>Render Preflight</strong> to check the scene without rendering. Use <strong>Preflight &amp; Render</strong>, <kbd>F12</kbd>, or the ProxyWrangler entries in the Render menu for checked rendering. <kbd>Ctrl</kbd> + <kbd>F12</kbd> and <strong>Preflight &amp; Animation</strong> check before starting an animation render.</p>
+        <p>Preflight checks production references, duplicate mappings, local editability, missing linked libraries, collection exclusions, the active camera, and current-frame transform compatibility. The checked render action stops before starting the renderer if an issue is found. Results appear in the panel under <strong>Last preflight result</strong>.</p>
+        <ol>
+          <li><strong>Before rendering:</strong> proxies are hidden from the render, production assets are made visible, and proxy world transforms are applied to their matching production assets.</li>
+          <li><strong>During rendering:</strong> the production geometry is used. Proxies are kept in the scene rather than deleted.</li>
+          <li><strong>After completion or cancellation:</strong> the previous production transforms and render visibility flags are restored. Production assets are hidden again in the viewport while their proxies remain available for layout work. A final visibility check runs after Blender finishes its render cleanup.</li>
+        </ol>
+        <p class="muted">The extension enables Blender’s Lock Interface while proxies are in use to protect render-time scene updates. It restores the previous setting after all proxies are manually restored, or when the extension is disabled.</p>
+        <div class="note warning"><p><strong>Use the checked render entry points.</strong> Native Blender Render menu actions, scripts calling Blender’s renderer directly, and render-farm commands can bypass the blocking preflight operator. Their visibility handlers still run and report detected problems, but cannot reliably cancel an already-started render. Preflight checks placement at the current frame; it does not validate every frame of an animation. Keymap conflicts may require using the panel button instead of F12.</p></div>
+      </section>
+
+      <section id="production">
+        <h2>Restore production assets permanently</h2>
+        <p>Use <strong>Restore Production → Selected</strong> or <strong>All</strong> when you want to leave proxy mode.</p>
+        <ul>
+          <li>Scans tagged proxies throughout the active scene; selection is not required.</li>
+          <li>Copies each proxy’s world-space placement to its matching production object.</li>
+          <li>Shows successfully restored production objects in the viewport.</li>
+          <li>Removes successful proxies and their unused proxy mesh data.</li>
+        </ul>
+        <p>If an asset cannot be restored safely, its proxy is retained and a warning explains the problem. Use the same view layer that was active when the proxies were generated.</p>
+        <div class="note"><p><strong>Render visibility is temporary; this button is permanent.</strong> Rendering returns you to the proxy layout. Manual restoration commits placements and removes successfully restored proxies.</p></div>
+      </section>
+
+      <section id="linked">
+        <h2>Work with linked assets</h2>
+        <p>ProxyWrangler supports mesh objects, collection instances, and library overrides. Proxy geometry is created locally; linked library mesh data is not edited.</p>
+        <ul>
+          <li><strong>Direct linked meshes:</strong> a local library override provides the editable production placement.</li>
+          <li><strong>Linked collection hierarchies:</strong> the tool can create a local override hierarchy for selected linked members.</li>
+          <li><strong>Collection instances:</strong> select the instance object to generate a combined silhouette proxy for its evaluated mesh contents, including nested mesh instances.</li>
+          <li><strong>Existing overrides:</strong> local overrides carry placement changes. A selected system override may be made editable locally.</li>
+        </ul>
+        <p class="muted">Production geometry remains linked where applicable. The local scene’s collection memberships and overrides may change to provide editable placements. Keep library files accessible when reopening a saved layout.</p>
+      </section>
+
+      <section id="troubleshooting">
+        <h2>Troubleshooting</h2>
+        <details open><summary>The buttons are disabled</summary><p>Switch to Object Mode. To generate proxies, select mesh objects or collection instances in the active view layer.</p></details>
+        <details open><summary>The silhouette is too rough</summary><p>Increase Collapse Ratio in Custom or Adaptive mode, or choose Detailed Silhouette. Select the proxies and use Regenerate → Selected. A higher percentage retains more shape detail at the cost of heavier proxies.</p></details>
+        <details open><summary>An asset already has a proxy</summary><p>Continue working on its existing proxy, or restore production assets before generating replacements.</p></details>
+        <details open><summary>A production target is missing</summary><p>Keep the proxy. Restore the production object or recover a saved scene containing the original relationship. Renaming a target is supported by the saved object reference, but deleting and recreating an object does not restore that relationship automatically.</p></details>
+        <details open><summary>Constraints, animation, or shear prevent exact placement</summary><p>Check the production object’s parenting, constraints, and animated transforms. Resolve the conflicting setup and try again. Manual restoration keeps the proxy when the resulting transform does not match closely enough.</p></details>
+        <details open><summary>The render is missing an asset</summary><p>Read the panel’s render preparation warning, confirm the linked library is available, and check collection render visibility, view-layer exclusions, and the camera. Automatic object visibility does not override all scene-level restrictions.</p></details>
+        <details open><summary>Restoration asks for another view layer</summary><p>Switch to the view layer used during proxy generation, then use Restore Production again.</p></details>
+        <details open><summary>I changed the ratio but nothing changed</summary><p>Use Regenerate to rebuild existing proxies. Fixed presets use their own percentages; choose Custom Ratio or Adaptive to use the slider.</p></details>
+        <details open><summary>Preflight reports a duplicate production mapping</summary><p>Two proxies point to the same production object. Keep the intended proxy and remove the accidental duplicate. To dress multiple copies, duplicate the production placement first and generate a proxy for each copy, rather than duplicating an existing proxy.</p></details>
+        <details open><summary>An asset is shared across scenes</summary><p>Use a separate production placement object or collection instance for each scene. Operations refuse objects shared across scenes so one scene’s layout work cannot change another scene’s production placement or visibility. Linked mesh data may still be shared between those separate placement objects.</p></details>
+        <details open><summary>An asset has a sheared world transform</summary><p>A rotated child under a parent with nonuniform scale can produce shear. Use a placement without shear before generating proxies. The tool refuses this transform instead of creating an incorrectly shaped or positioned stand-in.</p></details>
+      </section>
+      <footer>ProxyWrangler · Artist’s Guide · Self-contained and available offline · Use your browser’s Print command to save a PDF.</footer>
+    </main>
+  </div>
+</body>
+</html>

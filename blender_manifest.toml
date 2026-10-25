@@ -1,0 +1,17 @@
+schema_version = "1.0.0"
+id = "proxy_wrangler"
+version = "1.1.1"
+name = "ProxyWrangler"
+tagline = "Create silhouette proxies for fast environment layout"
+maintainer = "Gihan Nirmal Maddumage <maddumagegihan51@gmail.com>"
+support = "https://github.com/maddumagegihan51/proxy_wrangler/issues"
+type = "add-on"
+tags = ["Pipeline", "Object", "Scene"]
+blender_version_min = "4.2.0"
+license = ["SPDX:GPL-3.0-or-later"]
+
+[permissions]
+files = "Check linked asset library availability before rendering"
+
+[build]
+paths = ["__init__.py"]
